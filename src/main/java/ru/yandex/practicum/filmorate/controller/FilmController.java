@@ -17,9 +17,10 @@ public class FilmController {
     private static final LocalDate DATA_MIN = LocalDate.of(1895, 12, 28);
 
     @GetMapping("/films")
-    public Map<Integer, Film> getFilms() {
+    public ArrayList<Film> allFilms() {
         log.debug("Получили список фильмов: {}", films);
-        return films;
+        ArrayList<Film> fl = new ArrayList<>(films.values());
+        return fl;
     }
 
     @PostMapping("/films")
@@ -71,5 +72,9 @@ public class FilmController {
 
     private int newId() {
         return ++id;
+    }
+
+    public HashMap<Integer, Film> getFilms() {
+        return films;
     }
 }

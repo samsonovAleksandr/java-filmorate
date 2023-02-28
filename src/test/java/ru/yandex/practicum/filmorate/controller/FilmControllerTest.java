@@ -28,7 +28,7 @@ public class FilmControllerTest {
         film.setId(1);
         Film film1 = filmController.postFilm(film);
         Assert.assertEquals(film, film1);
-        Assert.assertEquals(filmController.getFilms().size(), 2);
+        Assert.assertEquals(filmController.allFilms().size(), 2);
     }
 
     @Test

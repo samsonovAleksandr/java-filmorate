@@ -8,8 +8,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @Slf4j
@@ -18,9 +16,10 @@ public class UserController {
     private final HashMap<Integer, User> users = new HashMap<>();
 
     @GetMapping("/users")
-    public Map<Integer, User> getUsers() {
+    public ArrayList<User> getUsers() {
         log.debug("Получили список Users: {}", users);
-        return users;
+        ArrayList<User> us = new ArrayList<>(users.values());
+        return us;
     }
 
     @PostMapping("/users")
@@ -47,6 +46,11 @@ public class UserController {
 
     private User userValidator(User user) throws ValidationException {
         LocalDate nowDate = LocalDate.now();
+        if (user.getBirthday().isAfter(nowDate)) {
+            log.warn("Дата рождения написана неверно: {}", user.getBirthday());
+            throw new ValidationException("Дата рождения неможет быть в будущем!");
+        }
+
         if (user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
             log.warn("Направильно написан емайл или пустой: {}", user.getEmail());
             throw new ValidationException("Введен не емайл!");
@@ -59,11 +63,6 @@ public class UserController {
         if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
             log.debug("Имя было пустым, поэтому применили к полю name начение поля login");
-        }
-
-        if (user.getBirthday().isAfter(nowDate)) {
-            log.warn("Дата рождения написана неверно: {}", user.getBirthday());
-            throw new ValidationException("Дата рождения неможет быть в будущем!");
         }
         return user;
     }
