@@ -7,41 +7,39 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
 public class UserController {
-    int id = 0;
-   private ArrayList<User> users = new ArrayList<>();
+    private int id = 0;
+    private final HashMap<Integer, User> users = new HashMap<>();
 
     @GetMapping("/users")
-    public List<User> getUsers() {
+    public Map<Integer, User> getUsers() {
         log.debug("Получили список Users: {}", users);
         return users;
     }
 
     @PostMapping("/users")
     public User postUser(@RequestBody User user) throws ValidationException {
-        users.add(userValidator(user));
+        users.put(id + 1, userValidator(user));
         user.setId(newId());
         log.debug("Добавили пользователя с ID: {}", user.getId());
         return user;
-
     }
 
     @PutMapping("/users")
     public User putUser(@RequestBody User user) throws ValidationException {
-
-        for (User user1 : users) {
-            if (user1.getId() == user.getId()) {
-                users.removeIf(user2 -> user2.getId() == user.getId());
-                users.add(userValidator(user));
-                log.debug("Обновили пользователя с id: {}", user.getId());
-            } else {
-                log.warn("Нет юзера с таким ID: {}", user.getId());
-                throw new ValidationException("Юзера с таким ID нет!");
-            }
+        if (users.containsKey(user.getId())) {
+            users.remove(user.getId());
+            users.put(user.getId(), userValidator(user));
+            log.debug("Обновили пользователя с id: {}", user.getId());
+        } else {
+            log.warn("Нет юзера с таким ID: {}", user.getId());
+            throw new ValidationException("Юзера с таким ID нет!");
         }
         return user;
     }
