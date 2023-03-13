@@ -4,10 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class FilmService {
         films.getFilmId(idFilm).removeLike(idUser);
     }
 
-    public List<Film> topFilmLike(){
+    public List<Film> topFilmLike(int length){
         List<Film> filmsList = films.getAllFilm();
         filmsList.sort(new Comparator<Film>() {
             @Override
@@ -39,7 +37,7 @@ public class FilmService {
 
         });
         List<Film> topFilm = null;
-        for (int i = 0; i <= 10; i++) {
+        for (int i = 0; i <= length; i++) {
             topFilm.add(filmsList.get(i));
         }
 

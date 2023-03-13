@@ -39,4 +39,12 @@ public class UserService {
                 ,users.getUserId(idUser1).getName(), users.getUserId(idUser2).getName());
         return mutualFriends;
     }
+
+    public Set<User> listFriendUserId(int id){
+        Set<User> listFriend = null;
+        for (Integer userId : users.getUserId(id).getFriends()){
+            listFriend.add(users.getUserId(userId));
+        }
+        return listFriend;
+    }
 }
