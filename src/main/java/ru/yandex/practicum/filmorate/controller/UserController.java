@@ -3,14 +3,13 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.sarvice.UserService;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @RestController
 @Slf4j
@@ -24,11 +23,11 @@ public class UserController {
     }
 
     @Autowired
-    UserStorage users;
+    InMemoryUserStorage users;
 
     @GetMapping("/users")
-    public List<User> getAllUsers(){
-       return users.getAllUser();
+    public List<User> getAllUsers() {
+        return users.getAllUser();
     }
 
     @PostMapping("/users")
@@ -37,7 +36,7 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public User putUser(@RequestBody User user) throws ValidationException {
+    public User putUser(@RequestBody User user) throws NotFoundExeption, ValidationException {
         return users.putUser(user);
     }
 
@@ -47,33 +46,28 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public User findUserById(@PathVariable int id) {
+    public User findUserById(@PathVariable int id) throws NotFoundExeption {
         return users.getUserId(id);
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
-    public void putFriendUser(@PathVariable int id, @PathVariable int friendId) {
+    public void putFriendUser(@PathVariable int id, @PathVariable int friendId) throws NotFoundExeption {
         service.putFriend(id, friendId);
     }
 
     @DeleteMapping("/users/{id}/friends/{friendId}")
-    public void deleteFriendUser(@PathVariable int id, @PathVariable int friendId) {
+    public void deleteFriendUser(@PathVariable int id, @PathVariable int friendId) throws NotFoundExeption {
         service.deleteFriend(id, friendId);
     }
 
     @GetMapping("/users/{id}/friends")
-    public Set<User> findListUserFriends(@PathVariable int id) {
+    public List<User> findListUserFriends(@PathVariable int id) throws NotFoundExeption {
         return service.listFriendUserId(id);
     }
 
     @GetMapping("/users/{id}/friends/common/{otherId}")
-    public Set<User> findGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
+    public List<User> findGeneralFriends(@PathVariable int id, @PathVariable int otherId) throws NotFoundExeption {
         return service.listOfMutualFriends(id, otherId);
-    }
-
-    @ExceptionHandler
-    public Map<String, String> validator(final ValidationException e){
-        return Map.of("error", "User непрошел валидацию!");
     }
 }
 

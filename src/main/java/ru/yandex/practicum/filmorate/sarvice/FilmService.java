@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.sarvice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
@@ -16,31 +17,38 @@ public class FilmService {
     @Autowired
     InMemoryFilmStorage films;
 
-    public void addLikeFilm(int idFilm, int idUser){
-        films.getFilmId(idFilm).addListLikeUser(idUser);
-
+    public void addLikeFilm(int idFilm, int idUser) throws NotFoundExeption {
+        if (!films.getFilmId(idFilm).getLikeUser().contains(idUser)) {
+            films.getFilmId(idFilm).addListLikeUser(idUser);
+            log.debug("Пользователь {} поставил лайк фильму {}", idUser, idFilm);
+        } else {
+            throw new NotFoundExeption("ЛАйк уже поставлен");
+        }
     }
 
-    public void deleteLike(int idFilm, int idUser){
-        films.getFilmId(idFilm).removeLike(idUser);
+    public void deleteLike(int idFilm, int idUser) throws NotFoundExeption {
+        if (films.getFilmId(idFilm).getLikeUser().contains(idUser)) {
+            films.getFilmId(idFilm).removeLike(idUser);
+            log.debug("Пользователь {} удалил лайк фильму {}", idUser, idFilm);
+        } else {
+            throw new NotFoundExeption("Нет лайка от этого юзера");
+        }
     }
 
-    public List<Film> topFilmLike(int length){
+    public List<Film> topFilmLike(Integer length) {
         List<Film> filmsList = films.getAllFilm();
         filmsList.sort(new Comparator<Film>() {
             @Override
             public int compare(Film o1, Film o2) {
-                if (o1.getLikeUser().size() == o2.getLikeUser().size()) return 0;
-                else if (o1.getLikeUser().size()> o2.getLikeUser().size()) return 1;
-                else return -1;
+                return Integer.compare(o2.getLikeUser().size(), o1.getLikeUser().size());
             }
-
         });
-        List<Film> topFilm = null;
-        for (int i = 0; i <= length; i++) {
-            topFilm.add(filmsList.get(i));
-        }
 
-        return topFilm;
+        if (filmsList.size() >= length) {
+            log.debug("Вывели спиок фильмов по количеству лайков длиной: {}", length);
+            return filmsList.subList(0, length);
+        }
+        log.debug("Вывели спиок фильмов по количеству лайков длиной: {}", filmsList.size());
+        return filmsList;
     }
 }

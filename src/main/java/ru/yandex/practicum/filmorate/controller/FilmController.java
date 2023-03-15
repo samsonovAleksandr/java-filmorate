@@ -3,13 +3,12 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.sarvice.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
-import javax.websocket.server.PathParam;
-import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -24,11 +23,16 @@ public class FilmController {
     }
 
     @Autowired
-    FilmStorage films;
+    InMemoryFilmStorage films;
 
     @GetMapping("/films")
-    public List<Film> getFilmList(){
+    public List<Film> getFilmList() {
         return films.getAllFilm();
+    }
+
+    @GetMapping("/films/{id}")
+    public Film getFilm(@PathVariable int id) throws NotFoundExeption {
+        return films.getFilmId(id);
     }
 
     @PostMapping("/films")
@@ -37,7 +41,7 @@ public class FilmController {
     }
 
     @PutMapping("/films")
-    public Film putFilm(@RequestBody Film film) throws ValidationException {
+    public Film putFilm(@RequestBody Film film) throws ValidationException, NotFoundExeption {
         return films.putFilm(film);
     }
 
@@ -47,18 +51,18 @@ public class FilmController {
     }
 
     @PutMapping("/films/{id}/like/{userId}")
-    public void likeFilm(@PathVariable int id, @PathVariable int userId){
+    public void likeFilm(@PathVariable int id, @PathVariable int userId) throws NotFoundExeption {
         service.addLikeFilm(id, userId);
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
-    public void deleteLike(@PathVariable int id, @PathVariable int userId){
+    public void deleteLike(@PathVariable int id, @PathVariable int userId) throws NotFoundExeption {
         service.deleteLike(id, userId);
     }
 
-    @GetMapping("/films/popular?count={count}")
-    public List<Film> popularFilms(@RequestParam(required = false) int count){
-       return service.topFilmLike(count);
+    @GetMapping("/films/popular")
+    public List<Film> popularFilms(@RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
+        return service.topFilmLike(count);
     }
 
 }

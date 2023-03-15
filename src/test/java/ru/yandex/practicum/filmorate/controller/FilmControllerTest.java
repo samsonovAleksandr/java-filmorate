@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -28,7 +29,7 @@ public class FilmControllerTest {
         film.setId(1);
         Film film1 = filmController.postFilm(film);
         Assert.assertEquals(film, film1);
-        Assert.assertEquals(filmController.allFilms().size(), 2);
+        Assert.assertEquals(filmController.getFilmList().size(), 2);
     }
 
     @Test
@@ -75,7 +76,7 @@ public class FilmControllerTest {
     }
 
     @Test
-    public void putFilm() throws ValidationException {
+    public void putFilm() throws ValidationException, NotFoundExeption {
         Film film = new Film("Driver", "Starring Ryan Gosling"
                 , LocalDate.of(2011, 10, 10), 100);
         filmController.postFilm(film);
@@ -83,7 +84,7 @@ public class FilmControllerTest {
                 , LocalDate.of(2011, 10, 10), 96);
         film1.setId(1);
         filmController.putFilm(film1);
-        Assertions.assertEquals(filmController.getFilms().get(film1.getId()).getDuration(), 96);
+        Assertions.assertEquals(filmController.getFilmList().get(film1.getId()).getDuration(), 96);
     }
 
     @Test
