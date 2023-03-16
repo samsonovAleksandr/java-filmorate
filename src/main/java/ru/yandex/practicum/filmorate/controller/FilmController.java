@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
@@ -9,21 +8,19 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.sarvice.FilmService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
-import java.util.*;
+import java.util.List;
 
 @RestController
 @Slf4j
 public class FilmController {
 
     private final FilmService service;
+    private final InMemoryFilmStorage films;
 
-    @Autowired
-    public FilmController(FilmService service) {
+    public FilmController(FilmService service, InMemoryFilmStorage films) {
         this.service = service;
+        this.films = films;
     }
-
-    @Autowired
-    InMemoryFilmStorage films;
 
     @GetMapping("/films")
     public List<Film> getFilmList() {

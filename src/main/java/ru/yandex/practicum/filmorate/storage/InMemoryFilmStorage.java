@@ -15,7 +15,6 @@ import java.util.List;
 @Component
 public class InMemoryFilmStorage implements FilmStorage{
     private int id = 0;
-
     private final HashMap<Integer, Film> films = new HashMap<>();
     private static final LocalDate DATA_MIN = LocalDate.of(1895, 12, 28);
     @Override
@@ -34,7 +33,7 @@ public class InMemoryFilmStorage implements FilmStorage{
             log.debug("Обновили пользователя с id: {}", film.getId());
         } else {
             log.warn("Нет фильма с таким ID: {}", film.getId());
-            throw new NotFoundExeption("С таким ID нет фильма!");
+            throw new NotFoundExeption("С таким ID - " + film.getId() + " нет фильма!" );
         }
         return film;
     }
@@ -46,7 +45,7 @@ public class InMemoryFilmStorage implements FilmStorage{
             films.keySet().removeIf(key -> key.equals(id));
         } else {
             log.warn("Нет фильма с таким ID: {}", id);
-            throw new ValidationException("С таким ID нет фильма!");
+            throw new ValidationException("С таким ID - " + id + " нет фильма!" );
         }
     }
 
@@ -56,7 +55,7 @@ public class InMemoryFilmStorage implements FilmStorage{
             log.debug("Выгрузили фильм с ID: {}", id);
             return films.get(id);
         } else {
-            throw new NotFoundExeption("Нет фильма с таким ID");
+            throw new NotFoundExeption("С таким ID - " + id + " нет фильма!" );
         }
 
     }
@@ -64,8 +63,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     @Override
     public List<Film> getAllFilm() {
         log.debug("Получили список фильмов: {}", films);
-        ArrayList<Film> fl = new ArrayList<>(films.values());
-        return fl;
+        return new ArrayList<>(films.values());
     }
 
     private boolean charDescriptFilm(String str) {

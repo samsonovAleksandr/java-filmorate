@@ -33,7 +33,7 @@ public class InMemoryUserStorage implements UserStorage{
             log.debug("Обновили пользователя с id: {}", user.getId());
         } else {
             log.warn("Нет юзера с таким ID: {}", user.getId());
-            throw new NotFoundExeption("Юзера с таким ID нет!");
+            throw new NotFoundExeption("Юзера с таким ID : " + user.getId() + " нет!");
         }
         return user;
     }
@@ -45,7 +45,7 @@ public class InMemoryUserStorage implements UserStorage{
             users.keySet().removeIf(key -> key.equals(id));
         } else {
             log.warn("Нет пользователя с таким ID: {}", id);
-            throw new ValidationException("С таким ID нет пользователя!");
+            throw new ValidationException("Юзера с таким ID : " + id + " нет!");
         }
     }
 
@@ -55,7 +55,7 @@ public class InMemoryUserStorage implements UserStorage{
             log.debug("Выгрузили пользователя с ID: {}", id);
             return users.get(id);
         } else{
-            throw new NotFoundExeption("Нет пользователя с таким ID");
+            throw new NotFoundExeption("Юзера с таким ID : " + id + " нет!");
         }
 
     }
@@ -63,8 +63,7 @@ public class InMemoryUserStorage implements UserStorage{
     @Override
     public List<User> getAllUser() {
         log.debug("Получили список Users: {}", users);
-        ArrayList<User> us = new ArrayList<>(users.values());
-        return us;
+        return new ArrayList<>(users.values());
     }
 
     private User userValidator(User user) throws ValidationException {
@@ -75,11 +74,11 @@ public class InMemoryUserStorage implements UserStorage{
         }
 
         if (user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
-            log.warn("Направильно написан емайл или пустой: {}", user.getEmail());
+            log.warn("Неправильно написан емайл или пустой: {}", user.getEmail());
             throw new ValidationException("Введен не емайл!");
         }
         if (user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
-            log.warn("Направильно написан логин или пустой: {}", user.getLogin());
+            log.warn("Неправильно написан логин или пустой: {}", user.getLogin());
             throw new ValidationException("Логин вводится без пробелов!");
         }
 

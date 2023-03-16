@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
@@ -17,13 +16,12 @@ public class UserController {
 
     private final UserService service;
 
-    @Autowired
-    public UserController(UserService service) {
-        this.service = service;
-    }
+    private final InMemoryUserStorage users;
 
-    @Autowired
-    InMemoryUserStorage users;
+    public UserController(UserService service, InMemoryUserStorage users) {
+        this.service = service;
+        this.users = users;
+    }
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
