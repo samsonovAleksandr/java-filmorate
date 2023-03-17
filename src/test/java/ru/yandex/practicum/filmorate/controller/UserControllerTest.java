@@ -24,7 +24,7 @@ public class UserControllerTest {
         user.setId(1);
         User user1 = userController.postUser(user);
         Assert.assertEquals(user, user1);
-        Assert.assertEquals(userController.getUsers().size(), 1);
+        Assert.assertEquals(userController.getAllUsers().size(), 1);
     }
 
     @Test

@@ -2,79 +2,64 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.sarvice.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 
 @RestController
 @Slf4j
 public class FilmController {
-    private int id = 0;
 
-    private final HashMap<Integer, Film> films = new HashMap<>();
-    private static final LocalDate DATA_MIN = LocalDate.of(1895, 12, 28);
+    private final FilmService service;
+    private final InMemoryFilmStorage films;
+
+    public FilmController(FilmService service, InMemoryFilmStorage films) {
+        this.service = service;
+        this.films = films;
+    }
 
     @GetMapping("/films")
-    public ArrayList<Film> allFilms() {
-        log.debug("Получили список фильмов: {}", films);
-        ArrayList<Film> fl = new ArrayList<>(films.values());
-        return fl;
+    public List<Film> getFilmList() {
+        return films.getAllFilm();
+    }
+
+    @GetMapping("/films/{id}")
+    public Film getFilm(@PathVariable int id) throws NotFoundExeption {
+        return films.getFilmId(id);
     }
 
     @PostMapping("/films")
     public Film postFilm(@RequestBody Film film) throws ValidationException {
-        films.put(id + 1, filmValidator(film));
-        film.setId(newId());
-        log.debug("Добавили новый фильм: {}", film);
-        return film;
+        return films.postFilm(film);
     }
-
 
     @PutMapping("/films")
-    public Film putFilm(@RequestBody Film film) throws ValidationException {
-        if (films.containsKey(film.getId())) {
-            films.remove(film.getId());
-            films.put(film.getId(), filmValidator(film));
-            log.debug("Обновили пользователя с id: {}", film.getId());
-        } else {
-            log.warn("Нет фильма с таким ID: {}", film.getId());
-            throw new ValidationException("С таким ID нет фильма!");
-        }
-        return film;
+    public Film putFilm(@RequestBody Film film) throws ValidationException, NotFoundExeption {
+        return films.putFilm(film);
     }
 
-    private boolean charDescriptFilm(String str) {
-        char[] stringToArray = str.toCharArray();
-        return stringToArray.length <= 200;
+    @DeleteMapping("/films/{id}")
+    public void deleteFilm(@PathVariable int id) throws ValidationException {
+        films.deleteFilm(id);
     }
 
-    private Film filmValidator(Film film) throws ValidationException {
-        if (film.getName().isEmpty()) {
-            log.warn("Ввведена пустая строка в названии фильма: {}", film.getName());
-            throw new ValidationException("Название не может быть пустым!");
-        }
-        if (!charDescriptFilm(film.getDescription())) {
-            log.warn("Описани длинее 200 символов: {}", film.getDescription());
-            throw new ValidationException("Слишком длинное описание!");
-        }
-        if (film.getReleaseDate().isBefore(DATA_MIN)) {
-            log.warn("Дата фильма слишком старая: {}", film.getReleaseDate());
-            throw new ValidationException("Дата фильма до 28 декабря 1895");
-        }
-        if (film.getDuration() <= 0) {
-            log.warn("Длина фильма отрицательная: {}", film.getDuration());
-            throw new ValidationException("Длительность фильма должна быть положительная!");
-        }
-        return film;
+    @PutMapping("/films/{id}/like/{userId}")
+    public void likeFilm(@PathVariable int id, @PathVariable int userId) throws NotFoundExeption {
+        service.addLikeFilm(id, userId);
     }
 
-    private int newId() {
-        return ++id;
+    @DeleteMapping("/films/{id}/like/{userId}")
+    public void deleteLike(@PathVariable int id, @PathVariable int userId) throws NotFoundExeption {
+        service.deleteLike(id, userId);
     }
 
-    public HashMap<Integer, Film> getFilms() {
-        return films;
+    @GetMapping("/films/popular")
+    public List<Film> popularFilms(@RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
+        return service.topFilmLike(count);
     }
+
 }
