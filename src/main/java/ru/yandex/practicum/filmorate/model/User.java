@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -11,6 +10,8 @@ import java.util.Set;
 public class User {
 
     private Set<Integer> friends = new HashSet<>();
+
+    private boolean friendshipIdUserIdFriend;
 
     private int id;
     private String email;

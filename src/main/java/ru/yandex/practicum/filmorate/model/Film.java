@@ -3,13 +3,17 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
 public class Film {
 
     private Set<Integer> likeUser = new HashSet<>();
+    private List<Integer> genre_id = new ArrayList<>();
+    private String rating;
     private int id;
     private String name;
     private String description;
