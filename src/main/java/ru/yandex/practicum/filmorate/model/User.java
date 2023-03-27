@@ -12,7 +12,6 @@ public class User {
     private Set<Integer> friends = new HashSet<>();
 
     private boolean friendshipIdUserIdFriend;
-
     private int id;
     private String email;
     private String login;
