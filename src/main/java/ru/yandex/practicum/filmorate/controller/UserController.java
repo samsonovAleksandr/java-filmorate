@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.sarvice.UserService;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
 
 import java.util.List;
 
@@ -16,9 +16,9 @@ public class UserController {
 
     private final UserService service;
 
-    private final InMemoryUserStorage users;
+    private final UserDbStorage users;
 
-    public UserController(UserService service, InMemoryUserStorage users) {
+    public UserController(UserService service, UserDbStorage users) {
         this.service = service;
         this.users = users;
     }
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id) throws ValidationException {
+    public void deleteUser(@PathVariable int id) {
         users.deleteUser(id);
     }
 
@@ -49,12 +49,12 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
-    public void putFriendUser(@PathVariable int id, @PathVariable int friendId) throws NotFoundExeption {
-        service.putFriend(id, friendId);
+    public boolean putFriend(@PathVariable int id, @PathVariable int friendId) throws NotFoundExeption {
+        return service.putFriend(id, friendId);
     }
 
     @DeleteMapping("/users/{id}/friends/{friendId}")
-    public void deleteFriendUser(@PathVariable int id, @PathVariable int friendId) throws NotFoundExeption {
+    public void deleteFriendUser(@PathVariable int id, @PathVariable int friendId) {
         service.deleteFriend(id, friendId);
     }
 
@@ -64,7 +64,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/friends/common/{otherId}")
-    public List<User> findGeneralFriends(@PathVariable int id, @PathVariable int otherId) throws NotFoundExeption {
+    public List<User> findGeneralFriends(@PathVariable int id, @PathVariable int otherId) {
         return service.listOfMutualFriends(id, otherId);
     }
 }

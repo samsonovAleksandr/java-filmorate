@@ -6,9 +6,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
 
-interface FilmStorage {
+public interface FilmStorage {
 
-    Film postFilm(Film film) throws ValidationException;
+    Film postFilm(Film film) throws ValidationException, NotFoundExeption;
 
     Film putFilm(Film film) throws ValidationException, NotFoundExeption;
 
@@ -17,4 +17,5 @@ interface FilmStorage {
     Film getFilmId(Integer id) throws NotFoundExeption;
 
     List<Film> getAllFilm();
+
 }
