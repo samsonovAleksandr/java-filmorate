@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.sarvice.FilmService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ import java.util.List;
 public class FilmController {
 
     private final FilmService service;
-    private final InMemoryFilmStorage films;
+    private final FilmDbStorage films;
 
-    public FilmController(FilmService service, InMemoryFilmStorage films) {
+    public FilmController(FilmService service, FilmDbStorage films) {
         this.service = service;
         this.films = films;
     }
@@ -33,7 +33,7 @@ public class FilmController {
     }
 
     @PostMapping("/films")
-    public Film postFilm(@RequestBody Film film) throws ValidationException {
+    public Film postFilm(@RequestBody Film film) throws ValidationException, NotFoundExeption {
         return films.postFilm(film);
     }
 
