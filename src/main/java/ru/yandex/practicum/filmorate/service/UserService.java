@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class UserService {
+public class UserService implements UserServiceInterface {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -28,6 +28,7 @@ public class UserService {
         this.userDbStorage = userDbStorage;
     }
 
+    @Override
     public boolean putFriend(int idUser, int idFriend) throws NotFoundExeption {
         if (containsUser(idUser) && containsUser(idFriend)) {
             boolean st1 = getFriendStatus(idUser, idFriend);
@@ -49,11 +50,13 @@ public class UserService {
         return false;
     }
 
+    @Override
     public void deleteFriend(int idUser, int idFriend) {
         String sql = "DELETE friends_user WHERE user_id = ? AND friend_id = ?";
         jdbcTemplate.update(sql, idUser, idFriend);
     }
 
+    @Override
     public List<User> listOfMutualFriends(int idUser1, int idUser2) {
         String sql = "SELECT * FROM users " +
                 "WHERE user_id IN " +
@@ -68,6 +71,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<User> listFriendUserId(int id) throws NotFoundExeption {
         String sql = "SELECT * FROM friends_user WHERE user_id=? AND status=true";
 
@@ -97,6 +101,7 @@ public class UserService {
                 .build();
     }
 
+    @Override
     public boolean containsUser(int id) throws NotFoundExeption {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE user_id=?", id);
         if (userRows.next()) {
@@ -106,7 +111,8 @@ public class UserService {
         }
     }
 
-    private boolean getFriendStatus(int id, int friendId) {
+    @Override
+    public boolean getFriendStatus(int id, int friendId) {
         String sql = "SELECT status FROM friends_user WHERE user_id=? AND friend_id=?";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, id, friendId);
         if (rs.next()) {

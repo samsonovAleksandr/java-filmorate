@@ -6,6 +6,8 @@ import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.FilmServiceInterface;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
 
 import java.util.List;
@@ -14,8 +16,8 @@ import java.util.List;
 @Slf4j
 public class FilmController {
 
-    private final FilmService service;
-    private final FilmDbStorage films;
+    private final FilmServiceInterface service;
+    private final FilmStorage films;
 
     public FilmController(FilmService service, FilmDbStorage films) {
         this.service = service;

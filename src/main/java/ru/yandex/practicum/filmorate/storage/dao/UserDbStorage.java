@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -20,6 +21,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
+@Repository
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
@@ -82,7 +84,7 @@ public class UserDbStorage implements UserStorage {
         return jdbcTemplate.query(sqlQuery, this::mapRowToUser);
     }
 
-    private User userValidator(User user) throws ValidationException {
+    private void userValidator(User user) throws ValidationException {
         LocalDate nowDate = LocalDate.now();
         if (user.getBirthday().isAfter(nowDate)) {
             log.warn("Дата рождения написана неверно: {}", user.getBirthday());
@@ -102,7 +104,6 @@ public class UserDbStorage implements UserStorage {
             user.setName(user.getLogin());
             log.debug("Имя было пустым, поэтому применили к полю name начение поля login");
         }
-        return user;
     }
 
     public User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {

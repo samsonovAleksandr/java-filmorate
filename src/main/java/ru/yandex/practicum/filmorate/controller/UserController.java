@@ -6,6 +6,8 @@ import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.UserServiceInterface;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
 
 import java.util.List;
@@ -14,9 +16,9 @@ import java.util.List;
 @Slf4j
 public class UserController {
 
-    private final UserService service;
+    private final UserServiceInterface service;
 
-    private final UserDbStorage users;
+    private final UserStorage users;
 
     public UserController(UserService service, UserDbStorage users) {
         this.service = service;
@@ -39,7 +41,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id) {
+    public void deleteUser(@PathVariable int id) throws ValidationException {
         users.deleteUser(id);
     }
 

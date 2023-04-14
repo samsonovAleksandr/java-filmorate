@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -23,6 +23,7 @@ import java.util.Objects;
 
 @Slf4j
 @Component
+@Repository
 public class FilmDbStorage implements FilmStorage {
 
     private static final LocalDate DATA_MIN = LocalDate.of(1895, 12, 28);
@@ -33,7 +34,6 @@ public class FilmDbStorage implements FilmStorage {
 
     private final GenreDao genreDao;
 
-    @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmGenreDao filmGenreDao, GenreDao genreDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.filmGenreDao = filmGenreDao;
@@ -118,7 +118,7 @@ public class FilmDbStorage implements FilmStorage {
         return stringToArray.length <= 200;
     }
 
-    private Film filmValidator(Film film) throws ValidationException {
+    private void filmValidator(Film film) throws ValidationException {
         if (film.getName().isEmpty()) {
             log.warn("Ввведена пустая строка в названии фильма: {}", film.getName());
             throw new ValidationException("Название не может быть пустым!");
@@ -135,7 +135,6 @@ public class FilmDbStorage implements FilmStorage {
             log.warn("Длина фильма отрицательная: {}", film.getDuration());
             throw new ValidationException("Длительность фильма должна быть положительная!");
         }
-        return film;
     }
 
     public Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {

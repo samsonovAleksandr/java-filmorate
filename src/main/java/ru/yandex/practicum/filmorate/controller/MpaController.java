@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.dao.MpaDao;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @Slf4j
 public class MpaController {
 
-    private MpaDao mpaDao;
+    private MpaStorage mpaDao;
 
     public MpaController(MpaDao mpaDao) {
         this.mpaDao = mpaDao;

@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class FilmService {
+public class FilmService implements FilmServiceInterface {
     private final JdbcTemplate jdbcTemplate;
 
     FilmDbStorage films;
@@ -21,6 +21,7 @@ public class FilmService {
         this.films = films;
     }
 
+    @Override
     public void addLikeFilm(int idFilm, int idUser) throws NotFoundExeption {
         if (idFilm > 0 && idUser > 0) {
             String sql = "INSERT INTO film_likes (film_id, user_id)" +
@@ -31,6 +32,7 @@ public class FilmService {
         }
     }
 
+    @Override
     public void deleteLike(int idFilm, int idUser) throws NotFoundExeption {
         if (idFilm > 0 && idUser > 0) {
             String sql = "DELETE FROM film_likes WHERE film_id = ? AND user_id = ?";
@@ -40,6 +42,7 @@ public class FilmService {
         }
     }
 
+    @Override
     public List<Film> topFilmLike(Integer length) {
         String sqlQuerte = "SELECT * " +
                 "FROM films AS f " +

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.dao.GenreDao;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @RestController
 @Slf4j
 public class GenreController {
-    private GenreDao genreDao;
+    private GenreStorage genreDao;
 
     public GenreController(GenreDao genreDao) {
         this.genreDao = genreDao;
