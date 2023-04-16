@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.FilmDao;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -24,20 +24,20 @@ import java.util.Objects;
 @Slf4j
 @Component
 @Repository
-public class FilmDbStorage implements FilmStorage {
+public class FilmDaoImpl implements FilmDao {
 
     private static final LocalDate DATA_MIN = LocalDate.of(1895, 12, 28);
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final FilmGenreDao filmGenreDao;
+    private final FilmGenreDaoImpl filmGenreDaoImpl;
 
-    private final GenreDao genreDao;
+    private final GenreDaoImpl genreDaoImpl;
 
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmGenreDao filmGenreDao, GenreDao genreDao) {
+    public FilmDaoImpl(JdbcTemplate jdbcTemplate, FilmGenreDaoImpl filmGenreDaoImpl, GenreDaoImpl genreDaoImpl) {
         this.jdbcTemplate = jdbcTemplate;
-        this.filmGenreDao = filmGenreDao;
-        this.genreDao = genreDao;
+        this.filmGenreDaoImpl = filmGenreDaoImpl;
+        this.genreDaoImpl = genreDaoImpl;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class FilmDbStorage implements FilmStorage {
         film.setId(id);
 
         if (film.getGenres() != null) {
-            filmGenreDao.addFilmGenre(film);
+            filmGenreDaoImpl.addFilmGenre(film);
         }
 
         return getFilmId(id);
@@ -80,7 +80,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getMpa().getId(),
                 film.getId());
         if (film.getGenres() != null) {
-            filmGenreDao.addFilmGenre(film);
+            filmGenreDaoImpl.addFilmGenre(film);
         }
         return getFilmId(film.getId());
     }
@@ -137,6 +137,7 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    @Override
     public Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
         Film.FilmBuilder builder = Film.builder();
         builder.id(resultSet.getInt("film_id"));
@@ -148,7 +149,7 @@ public class FilmDbStorage implements FilmStorage {
                 .id(resultSet.getInt("mpa_id"))
                 .name(resultSet.getString("mpa_name"))
                 .build());
-        builder.genres(genreDao.getByFilmId(resultSet.getInt("film_id")));
+        builder.genres(genreDaoImpl.getByFilmId(resultSet.getInt("film_id")));
         return builder
                 .build();
     }

@@ -11,11 +11,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Component
-public class FilmGenreDao {
+public class FilmGenreDaoImpl {
 
     JdbcTemplate jdbcTemplate;
 
-    public FilmGenreDao(JdbcTemplate jdbcTemplate) {
+    public FilmGenreDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

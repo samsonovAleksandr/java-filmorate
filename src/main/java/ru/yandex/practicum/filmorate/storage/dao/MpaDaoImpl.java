@@ -4,17 +4,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.MpaDao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 @Component
-public class MpaDao implements MpaStorage {
+public class MpaDaoImpl implements MpaDao {
     JdbcTemplate jdbcTemplate;
 
-    public MpaDao(JdbcTemplate jdbcTemplate) {
+    public MpaDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

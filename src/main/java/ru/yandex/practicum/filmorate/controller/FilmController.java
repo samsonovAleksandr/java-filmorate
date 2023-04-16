@@ -6,9 +6,6 @@ import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.service.FilmServiceInterface;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
 
 import java.util.List;
 
@@ -16,37 +13,35 @@ import java.util.List;
 @Slf4j
 public class FilmController {
 
-    private final FilmServiceInterface service;
-    private final FilmStorage films;
+    private final FilmService service;
 
-    public FilmController(FilmService service, FilmDbStorage films) {
+    public FilmController(FilmService service) {
         this.service = service;
-        this.films = films;
     }
 
     @GetMapping("/films")
     public List<Film> getFilmList() {
-        return films.getAllFilm();
+        return service.getAllFilm();
     }
 
     @GetMapping("/films/{id}")
     public Film getFilm(@PathVariable int id) throws NotFoundExeption {
-        return films.getFilmId(id);
+        return service.getFilmId(id);
     }
 
     @PostMapping("/films")
     public Film postFilm(@RequestBody Film film) throws ValidationException, NotFoundExeption {
-        return films.postFilm(film);
+        return service.postFilm(film);
     }
 
     @PutMapping("/films")
     public Film putFilm(@RequestBody Film film) throws ValidationException, NotFoundExeption {
-        return films.putFilm(film);
+        return service.putFilm(film);
     }
 
     @DeleteMapping("/films/{id}")
     public void deleteFilm(@PathVariable int id) throws ValidationException {
-        films.deleteFilm(id);
+        service.deleteFilm(id);
     }
 
     @PutMapping("/films/{id}/like/{userId}")

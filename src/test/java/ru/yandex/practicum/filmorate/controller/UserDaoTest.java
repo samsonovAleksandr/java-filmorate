@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
+import ru.yandex.practicum.filmorate.service.impl.UserServiceImpl;
+import ru.yandex.practicum.filmorate.storage.dao.UserDaoImpl;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -19,12 +19,12 @@ import java.util.Collection;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class UserStorageTest {
+public class UserDaoTest {
 
 
     @Autowired
-    private final UserService userService;
-    private final UserDbStorage userDbStorage;
+    private final UserServiceImpl userServiceImpl;
+    private final UserDaoImpl userDaoImpl;
 
     @Test
     void postUser() throws ValidationException {
@@ -34,7 +34,7 @@ public class UserStorageTest {
                 .name("Alex")
                 .birthday(LocalDate.of(1994, 11, 2))
                 .build();
-        userDbStorage.postUser(user);
+        userDaoImpl.postUser(user);
         AssertionsForClassTypes.assertThat(user).extracting("id").isNotNull();
         AssertionsForClassTypes.assertThat(user).extracting("name").isNotNull();
     }
@@ -47,8 +47,8 @@ public class UserStorageTest {
                 .name("Alex")
                 .birthday(LocalDate.of(1994, 11, 2))
                 .build();
-        userDbStorage.postUser(user);
-        AssertionsForClassTypes.assertThat(userDbStorage.getUserId(user.getId()))
+        userDaoImpl.postUser(user);
+        AssertionsForClassTypes.assertThat(userDaoImpl.getUserId(user.getId()))
                 .hasFieldOrPropertyWithValue("id", user.getId());
     }
 
@@ -60,7 +60,7 @@ public class UserStorageTest {
                 .name("Alex")
                 .birthday(LocalDate.of(1994, 11, 2))
                 .build();
-        userDbStorage.postUser(user);
+        userDaoImpl.postUser(user);
         User userUp = User.builder()
                 .id(1)
                 .email("simaUp@mail.ru")
@@ -68,8 +68,8 @@ public class UserStorageTest {
                 .name("AlexUp")
                 .birthday(LocalDate.of(1994, 11, 2))
                 .build();
-        userDbStorage.putUser(userUp);
-        AssertionsForClassTypes.assertThat(userDbStorage.getUserId(userUp.getId()))
+        userDaoImpl.putUser(userUp);
+        AssertionsForClassTypes.assertThat(userDaoImpl.getUserId(userUp.getId()))
                 .hasFieldOrPropertyWithValue("id", userUp.getId());
     }
 
@@ -82,7 +82,7 @@ public class UserStorageTest {
                 .name("Alex")
                 .birthday(LocalDate.of(1994, 11, 2))
                 .build();
-        Assertions.assertThatThrownBy(() -> userDbStorage.putUser(user));
+        Assertions.assertThatThrownBy(() -> userDaoImpl.putUser(user));
     }
 
     @Test
@@ -93,16 +93,16 @@ public class UserStorageTest {
                 .name("Alex")
                 .birthday(LocalDate.of(1994, 11, 2))
                 .build();
-        userDbStorage.postUser(user);
+        userDaoImpl.postUser(user);
         User user2 = User.builder()
                 .email("sima2@mail.ru")
                 .login("sima2")
                 .name("Alex2")
                 .birthday(LocalDate.of(1994, 11, 2))
                 .build();
-        userDbStorage.postUser(user2);
-        userService.putFriend(user.getId(), user2.getId());
-        Assertions.assertThat(userService.listFriendUserId(user.getId())).isNotNull();
+        userDaoImpl.postUser(user2);
+        userServiceImpl.putFriend(user.getId(), user2.getId());
+        Assertions.assertThat(userServiceImpl.listFriendUserId(user.getId())).isNotNull();
     }
 
     @Test
@@ -126,13 +126,13 @@ public class UserStorageTest {
                 .birthday(LocalDate.of(1994, 11, 2))
                 .build();
 
-        userDbStorage.postUser(user);
-        userDbStorage.postUser(user2);
-        userDbStorage.postUser(user3);
+        userDaoImpl.postUser(user);
+        userDaoImpl.postUser(user2);
+        userDaoImpl.postUser(user3);
 
-        userService.putFriend(user.getId(), user2.getId());
-        userService.putFriend(user2.getId(), user3.getId());
-        Assertions.assertThat(userService.listOfMutualFriends(user.getId(), user2.getId()).size() == 1);
+        userServiceImpl.putFriend(user.getId(), user2.getId());
+        userServiceImpl.putFriend(user2.getId(), user3.getId());
+        Assertions.assertThat(userServiceImpl.listOfMutualFriends(user.getId(), user2.getId()).size() == 1);
     }
 
     @Test
@@ -143,8 +143,8 @@ public class UserStorageTest {
                 .name("Alex")
                 .birthday(LocalDate.of(1994, 11, 2))
                 .build();
-        userDbStorage.postUser(user);
-        Collection<User> users = userDbStorage.getAllUser();
+        userDaoImpl.postUser(user);
+        Collection<User> users = userDaoImpl.getAllUser();
         Assertions.assertThat(users).isNotEmpty().isNotNull().doesNotHaveDuplicates();
         Assertions.assertThat(users).extracting("email").contains(user.getEmail());
         Assertions.assertThat(users).extracting("login").contains(user.getLogin());

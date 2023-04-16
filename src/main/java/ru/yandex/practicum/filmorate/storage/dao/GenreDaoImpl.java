@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.GenreDao;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
@@ -12,10 +12,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Component
-public class GenreDao implements GenreStorage {
+public class GenreDaoImpl implements GenreDao {
     JdbcTemplate jdbcTemplate;
 
-    public GenreDao(JdbcTemplate jdbcTemplate) {
+    public GenreDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

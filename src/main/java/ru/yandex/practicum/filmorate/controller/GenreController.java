@@ -6,27 +6,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.dao.GenreDao;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.List;
 
 @RestController
 @Slf4j
 public class GenreController {
-    private GenreStorage genreDao;
+    private final FilmService filmService;
 
-    public GenreController(GenreDao genreDao) {
-        this.genreDao = genreDao;
+    public GenreController(FilmService filmService) {
+        this.filmService = filmService;
     }
 
     @GetMapping("/genres")
     public List<Genre> getGenre() {
-        return genreDao.getGenre();
+        return filmService.getGenre();
     }
 
     @GetMapping("/genres/{id}")
     public Genre getGenreId(@PathVariable int id) throws NotFoundExeption {
-        return genreDao.getGenreId(id);
+        return filmService.getGenreId(id);
     }
 }

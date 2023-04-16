@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.UserDao;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -22,11 +22,11 @@ import java.util.Objects;
 @Slf4j
 @Component
 @Repository
-public class UserDbStorage implements UserStorage {
+public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
+    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -53,12 +53,12 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User putUser(User user) throws ValidationException, NotFoundExeption {
+    public User putUser(User user) throws NotFoundExeption {
         String sqlQuere = "UPDATE users SET " +
-                   " login = ?, name = ?, email = ?, birthday = ? WHERE user_id = ?";
-          jdbcTemplate.update(sqlQuere,user.getLogin(),user.getName(), user.getEmail(),
-                   Date.valueOf(user.getBirthday()), user.getId());
-           return getUserId(user.getId());
+                " login = ?, name = ?, email = ?, birthday = ? WHERE user_id = ?";
+        jdbcTemplate.update(sqlQuere, user.getLogin(), user.getName(), user.getEmail(),
+                Date.valueOf(user.getBirthday()), user.getId());
+        return getUserId(user.getId());
     }
 
     @Override
@@ -69,12 +69,12 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUserId(Integer id) throws NotFoundExeption {
-       try {
-           String sqlQuery = "SELECT * FROM users WHERE user_id=?";
-           return jdbcTemplate.queryForObject(sqlQuery,this::mapRowToUser, id);
-       } catch (Exception e) {
-           throw  new NotFoundExeption("Нет такого еюзера");
-       }
+        try {
+            String sqlQuery = "SELECT * FROM users WHERE user_id=?";
+            return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToUser, id);
+        } catch (Exception e) {
+            throw new NotFoundExeption("Нет такого еюзера");
+        }
 
     }
 

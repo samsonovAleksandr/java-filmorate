@@ -1,57 +1,37 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
+import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.List;
 
-@Service
-@Slf4j
-public class FilmService implements FilmServiceInterface {
-    private final JdbcTemplate jdbcTemplate;
+public interface FilmService {
+    void addLikeFilm(int idFilm, int idUser) throws NotFoundExeption;
 
-    FilmDbStorage films;
+    void deleteLike(int idFilm, int idUser) throws NotFoundExeption;
 
-    public FilmService(JdbcTemplate jdbcTemplate, FilmDbStorage films) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.films = films;
-    }
+    List<Film> topFilmLike(Integer length);
 
-    @Override
-    public void addLikeFilm(int idFilm, int idUser) throws NotFoundExeption {
-        if (idFilm > 0 && idUser > 0) {
-            String sql = "INSERT INTO film_likes (film_id, user_id)" +
-                    "VALUES (?,?)";
-            jdbcTemplate.update(sql, idFilm, idUser);
-        } else {
-            throw new NotFoundExeption("Нет такого фильма или юзера");
-        }
-    }
+    Film postFilm(Film film) throws ValidationException, NotFoundExeption;
 
-    @Override
-    public void deleteLike(int idFilm, int idUser) throws NotFoundExeption {
-        if (idFilm > 0 && idUser > 0) {
-            String sql = "DELETE FROM film_likes WHERE film_id = ? AND user_id = ?";
-            jdbcTemplate.update(sql, idFilm, idUser);
-        } else {
-            throw new NotFoundExeption("Нет такого фильма или юзера");
-        }
-    }
+    Film putFilm(Film film) throws ValidationException, NotFoundExeption;
 
-    @Override
-    public List<Film> topFilmLike(Integer length) {
-        String sqlQuerte = "SELECT * " +
-                "FROM films AS f " +
-                "LEFT JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
-                "LEFT JOIN film_likes AS l ON f.film_id = l.film_id " +
-                "GROUP BY f.film_id, l.user_id " +
-                "ORDER BY SUM(l.film_id) DESC, f.name " +
-                "LIMIT(?)";
+    void deleteFilm(Integer id) throws ValidationException;
 
-        return jdbcTemplate.query(sqlQuerte, films::mapRowToFilm, length);
-    }
+    Film getFilmId(Integer id) throws NotFoundExeption;
+
+    List<Film> getAllFilm();
+
+    List<Genre> getGenre();
+
+    Genre getGenreId(int id) throws NotFoundExeption;
+
+    List<Genre> getByFilmId(int filmId);
+
+    List<Mpa> getMpa();
+
+    Mpa getMpaId(int id) throws NotFoundExeption;
 }

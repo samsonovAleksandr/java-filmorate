@@ -6,9 +6,6 @@ import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.service.UserServiceInterface;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
 
 import java.util.List;
 
@@ -16,38 +13,35 @@ import java.util.List;
 @Slf4j
 public class UserController {
 
-    private final UserServiceInterface service;
+    private final UserService service;
 
-    private final UserStorage users;
-
-    public UserController(UserService service, UserDbStorage users) {
+    public UserController(UserService service) {
         this.service = service;
-        this.users = users;
     }
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        return users.getAllUser();
+        return service.getAllUser();
     }
 
     @PostMapping("/users")
     public User postUser(@RequestBody User user) throws ValidationException {
-        return users.postUser(user);
+        return service.postUser(user);
     }
 
     @PutMapping("/users")
     public User putUser(@RequestBody User user) throws NotFoundExeption, ValidationException {
-        return users.putUser(user);
+        return service.putUser(user);
     }
 
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable int id) throws ValidationException {
-        users.deleteUser(id);
+        service.deleteUser(id);
     }
 
     @GetMapping("/users/{id}")
     public User findUserById(@PathVariable int id) throws NotFoundExeption {
-        return users.getUserId(id);
+        return service.getUserId(id);
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")

@@ -12,9 +12,9 @@ import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
+import ru.yandex.practicum.filmorate.service.impl.FilmServiceImpl;
+import ru.yandex.practicum.filmorate.storage.dao.FilmDaoImpl;
+import ru.yandex.practicum.filmorate.storage.dao.UserDaoImpl;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -22,14 +22,14 @@ import java.util.Collection;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class FilmStorageTest {
+public class FilmDaoTest {
 
 
     @Autowired
-    private final FilmService filmService;
-    private final FilmDbStorage filmDbStorage;
+    private final FilmServiceImpl filmServiceImpl;
+    private final FilmDaoImpl filmDaoImpl;
 
-    private final UserDbStorage userDbStorage;
+    private final UserDaoImpl userDaoImpl;
 
 
     @Test
@@ -44,7 +44,7 @@ public class FilmStorageTest {
                         .name("PG")
                         .build())
                 .build();
-        filmDbStorage.postFilm(film);
+        filmDaoImpl.postFilm(film);
         AssertionsForClassTypes.assertThat(film).extracting("id").isNotNull();
         AssertionsForClassTypes.assertThat(film).extracting("name").isNotNull();
     }
@@ -61,7 +61,7 @@ public class FilmStorageTest {
                         .name("PG")
                         .build())
                 .build();
-        filmDbStorage.postFilm(film);
+        filmDaoImpl.postFilm(film);
         Film film1 = Film.builder()
                 .id(1)
                 .name("DriveUP")
@@ -73,8 +73,8 @@ public class FilmStorageTest {
                         .name("PG")
                         .build())
                 .build();
-        filmDbStorage.putFilm(film1);
-        AssertionsForClassTypes.assertThat(filmDbStorage.getFilmId(film1.getId()))
+        filmDaoImpl.putFilm(film1);
+        AssertionsForClassTypes.assertThat(filmDaoImpl.getFilmId(film1.getId()))
                 .hasFieldOrPropertyWithValue("id", film1.getId());
     }
 
@@ -90,8 +90,8 @@ public class FilmStorageTest {
                         .name("PG")
                         .build())
                 .build();
-        filmDbStorage.postFilm(film);
-        AssertionsForClassTypes.assertThat(filmDbStorage.getFilmId(film.getId()))
+        filmDaoImpl.postFilm(film);
+        AssertionsForClassTypes.assertThat(filmDaoImpl.getFilmId(film.getId()))
                 .hasFieldOrPropertyWithValue("id", film.getId());
     }
 
@@ -108,7 +108,7 @@ public class FilmStorageTest {
                         .name("PG")
                         .build())
                 .build();
-        Assertions.assertThatThrownBy(() -> filmDbStorage.putFilm(film));
+        Assertions.assertThatThrownBy(() -> filmDaoImpl.putFilm(film));
     }
 
     @Test
@@ -123,8 +123,8 @@ public class FilmStorageTest {
                         .name("PG")
                         .build())
                 .build();
-        filmDbStorage.postFilm(film);
-        Collection<Film> films = filmDbStorage.getAllFilm();
+        filmDaoImpl.postFilm(film);
+        Collection<Film> films = filmDaoImpl.getAllFilm();
         Assertions.assertThat(films).isNotEmpty().isNotNull().doesNotHaveDuplicates();
         Assertions.assertThat(films).extracting("name").contains(film.getName());
         Assertions.assertThat(films).extracting("description").contains(film.getDescription());
@@ -151,10 +151,10 @@ public class FilmStorageTest {
                 .genres(null)
                 .build();
 
-        userDbStorage.postUser(user);
-        filmDbStorage.postFilm(film);
-        filmService.addLikeFilm(film.getId(), user.getId());
-        Assertions.assertThat(filmService.topFilmLike(1).size() == 1);
+        userDaoImpl.postUser(user);
+        filmDaoImpl.postFilm(film);
+        filmServiceImpl.addLikeFilm(film.getId(), user.getId());
+        Assertions.assertThat(filmServiceImpl.topFilmLike(1).size() == 1);
     }
 
     @Test
@@ -197,14 +197,14 @@ public class FilmStorageTest {
                 .genres(null)
                 .build();
 
-        userDbStorage.postUser(user);
-        userDbStorage.postUser(user2);
-        filmDbStorage.postFilm(film);
-        filmDbStorage.postFilm(film2);
-        filmService.addLikeFilm(film.getId(), user.getId());
-        filmService.addLikeFilm(film.getId(), user2.getId());
-        filmService.addLikeFilm(film2.getId(), user.getId());
-        Assertions.assertThat(filmService.topFilmLike(2).get(1).getName().equals(film.getName()));
+        userDaoImpl.postUser(user);
+        userDaoImpl.postUser(user2);
+        filmDaoImpl.postFilm(film);
+        filmDaoImpl.postFilm(film2);
+        filmServiceImpl.addLikeFilm(film.getId(), user.getId());
+        filmServiceImpl.addLikeFilm(film.getId(), user2.getId());
+        filmServiceImpl.addLikeFilm(film2.getId(), user.getId());
+        Assertions.assertThat(filmServiceImpl.topFilmLike(2).get(1).getName().equals(film.getName()));
 
     }
 
