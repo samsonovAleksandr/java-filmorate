@@ -1,24 +1,35 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Film {
 
-    private Set<Integer> likeUser = new HashSet<>();
-    private List<Integer> genre_id = new ArrayList<>();
-    private String rating;
+
     private int id;
     private String name;
     private String description;
     private LocalDate releaseDate;
     private int duration;
+    private Mpa mpa;
+    private List<Genre> genres;
+
+    public Film(String name, String description, LocalDate releaseDate, int duration, Mpa mpa) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
+    }
 
     public Film(String name, String description, LocalDate releaseDate, int duration) {
         this.name = name;
@@ -27,11 +38,4 @@ public class Film {
         this.duration = duration;
     }
 
-    public void addListLikeUser(int id) {
-        likeUser.add(id);
-    }
-
-    public void removeLike(int id) {
-        likeUser.remove(id);
-    }
 }
