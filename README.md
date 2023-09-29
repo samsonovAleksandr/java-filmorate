@@ -1,8 +1,16 @@
 # java-filmorate
 Учебный проект Яндекс.Практикум.
 
+## Описание
+![spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white) ![postgres](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white
+) ![ide](https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white
+) ![java](https://img.shields.io/badge/Java11-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white
+) ![markdown](https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white
+) ![junit](https://img.shields.io/badge/JUnit_Test-DC143C?style=for-the-badge&logo=junit&logoColor=white
+) ![maven](https://img.shields.io/badge/Maven-008000?style=for-the-badge&logo=maven&logoColor=white) 
 
-Блок-схема Базы Данных приложения:
+Filmorate - это бэкэнд-сервис на основе Restful API для хранения и управления информацией о фильмах(название, рейтинг MPA, жанр, описание и продолжительность), составления рейтинга фильмов на основе отзывов пользователей, поиска фильма, а также для общения пользователей.
+## Блок-схема Базы Данных приложения:
 
 ![alt text](src/main/resources/image/Filmorate.jpg)
 
@@ -47,4 +55,7 @@ LIMIT(?)
 
 </details>
 
+## Диаграмма классов
+
+![diagramm](src/main/resources/image/java-filmorate.png)
 
