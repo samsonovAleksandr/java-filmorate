@@ -6,8 +6,8 @@
 ) ![ide](https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white
 ) ![java](https://img.shields.io/badge/Java11-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white
 ) ![markdown](https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white
-) ![junit](https://img.shields.io/badge/JUnit_Test-DC143C?style=for-the-badge&logo=junit&logoColor=white
-) ![maven](https://img.shields.io/badge/Maven-008000?style=for-the-badge&logo=maven&logoColor=white) 
+) ![junit](https://img.shields.io/badge/junit5-DC143C?style=for-the-badge&logo=junit5&logoColor=white
+) ![maven](https://img.shields.io/badge/Apache_Maven-008000?style=for-the-badge&logo=apachemaven&logoColor=white) 
 
 Filmorate - это бэкэнд-сервис на основе Restful API для хранения и управления информацией о фильмах(название, рейтинг MPA, жанр, описание и продолжительность), составления рейтинга фильмов на основе отзывов пользователей, поиска фильма, а также для общения пользователей.
 ## Блок-схема Базы Данных приложения:
